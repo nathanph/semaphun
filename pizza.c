@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <semaphore.h>
 #include <pthread.h>
+#include <unistd.h>
 #include "pizza.h"
 
 int slicesAvailable = 0;
@@ -25,24 +26,23 @@ int main( int argc, const char* argv[] ) {
     pthread_t studentTwo;
     pthread_t studentThree;
     pthread_t studentFour;
+    pthread_t pizzaPlaceThread;
+
     pthread_create( &studentOne, NULL, (void *) &student, (void *) &studentID[0] );
     pthread_create( &studentTwo, NULL, (void *) &student, (void *) &studentID[1] );
     pthread_create( &studentThree, NULL, (void *) &student, (void *) &studentID[2] );
     pthread_create( &studentFour, NULL, (void *) &student, (void *) &studentID[3] );
+    pthread_create( &pizzaPlaceThread, NULL, (void *) &pizzaPlace, (void *) NULL );
+
     pthread_join( studentOne, NULL );
     pthread_join( studentTwo, NULL );
     pthread_join( studentThree, NULL );
     pthread_join( studentFour, NULL );
-
-
-    pthread_t pizzaPlaceThread;
-    pthread_create( &pizzaPlaceThread, NULL, (void *) &pizzaPlace, NULL );
     pthread_join( pizzaPlaceThread, NULL );
+
 
     sem_destroy( &mutex );
     sem_destroy( &order );
-
-    printf("TEST");
 
     exit(0);
 
@@ -54,7 +54,7 @@ void pizzaPlace( void ) {
         sem_wait( &order );
             sem_wait( &mutex );
                 slicesAvailable = 8;
-                printf("Pizza place received an order for 8 slices.");
+                printf("Pizza place received an order for 8 slices.\n");
             sem_post( &mutex );
     }
 }
@@ -66,8 +66,8 @@ void student( void *studentID ) {
         sem_wait( &mutex );
         if( slicesAvailable )
         {
-            sem_post( &mutex );
             slicesAvailable--;
+            sem_post( &mutex );
             eatAndCode( student , slicesAvailable+1);
         }
         else
@@ -81,6 +81,7 @@ void student( void *studentID ) {
             }
             else
             {
+                printf("student%d is ordering a pizza.\n", student);
                 sem_post( &order );
                 sem_post( &mutex );
                 goofOff( student );
@@ -95,4 +96,5 @@ void eatAndCode( int student, int slice ) {
 
 void goofOff( int student ) {
     printf("student%d is goofing off.\n", student);
+    sleep(1);
 }
