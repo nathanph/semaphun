@@ -4,22 +4,31 @@
 #include <semaphore.h>
 #include <pthread.h>
 
+#define THREAD_COUNT 7
+
 void *text(void *arg);
 
 int code[] = { 4, 6, 3, 1, 5, 0, 2 };
-
-sem_t mutex;
+sem_t sems[THREAD_COUNT];
 
 int main()
 {
     int i;
-    pthread_t tid[7];
 
-    sem_init( &mutex, 0, 1 );
+    sem_init(&sems[0], 1, 1);
+    for (i = 1; i < THREAD_COUNT; i++)
+    {
+        sem_init(&sems[i], 1, 0);
+    }
 
-    for (i = 0; i < 7; i++)
+    pthread_t tid[THREAD_COUNT];
+    for (i = 0; i < THREAD_COUNT; i++)
     {
         pthread_create(&tid[i], NULL, text, (void*)&code[i]);
+    }
+    for (i = 0; i < THREAD_COUNT; i++)
+    {
+        pthread_join(tid[i], NULL);
     }
 
     return 0;
@@ -27,9 +36,8 @@ int main()
 
 void *text(void *arg)
 {
-
     int n = *(int*)arg;
-
+    sem_wait(&sems[n]);
     switch (n)
     {
         case 0:
@@ -66,7 +74,7 @@ void *text(void *arg)
             printf(" definition does not specify which process will be awakened.\n\n");
         break;
     }
-
+    sem_post(&sems[n+1]);
     pthread_exit(0);
 }
 
