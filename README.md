@@ -1,2 +1,10 @@
-# semaphun
-Introduction to MINIX 3 and fun with semaphores. 
+# Lab 6
+More fun with semaphores.
+
+## Authors
+* David Kale
+* Nathan Hernandez
+
+## Quickstart
+* > make
+* > ./sync

@@ -74,7 +74,10 @@ void *text(void *arg)
             printf(" definition does not specify which process will be awakened.\n\n");
         break;
     }
-    sem_post(&sems[n+1]);
+    if (n < THREAD_COUNT)
+    {
+        sem_post(&sems[n+1]);
+    }
     pthread_exit(0);
 }
 
