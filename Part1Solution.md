@@ -19,13 +19,13 @@ The following steps were performed to add a new system call to Minix:
 4. Rebuild *everything*
 
 Sample output from running system call:
-![alt text](screenshots/lab6_1.PNG "Fig1")
+![alt text](screenshots/lab6_1.PNG?raw=true "Fig1")
 
 Interestingly, the bottom figure shows output when running through SSH. The output from the
 system call only goes to the first console of the virtual machine, but cannot be seen in the
 terminal running SSH.
 
-![alt text](screenshots/lab6_2.PNG "Fig2")
+![alt text](screenshots/lab6_2.PNG?raw=true "Fig2")
 
 ## Diffs
 1. diff /usr/src/include/minix/callnr.h /usr/src-backup/include/minix/callnr.h
